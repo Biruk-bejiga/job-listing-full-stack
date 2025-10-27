@@ -52,8 +52,12 @@ model Account {
   session_state     String?
 
   user User @relation("UserAccounts", fields: [userId], references: [id])
-
-  @@index([provider, providerAccountId])
+  // Unique constraint used by NextAuth's Prisma adapter to lookup accounts
+  // by provider + providerAccountId (adapter expects a unique composite
+  // constraint named `provider_providerAccountId`). Use @@unique so
+  // `findUnique` with `where: { provider_providerAccountId: { provider, providerAccountId }}`
+  // works correctly with Prisma + MongoDB.
+  @@unique([provider, providerAccountId], map: "provider_providerAccountId")
   @@map("accounts")
 }
 

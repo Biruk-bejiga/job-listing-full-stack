@@ -34,9 +34,7 @@ async function main() {
 
   // Create jobs (ensure idempotent)
   const job1 = await prisma.job.create({
-    where: { title: 'Backend Engineer' },
-    update: {},
-    create: {
+    data: {
       title: 'Backend Engineer',
       description: 'Work on APIs and services.',
       company: 'Acme Co',
@@ -46,10 +44,8 @@ async function main() {
     }
   });
 
-  const job2 = await prisma.job.upsert({
-    where: { title: 'Frontend Engineer' },
-    update: {},
-    create: {
+  const job2 = await prisma.job.create({
+    data: {
       title: 'Frontend Engineer',
       description: 'Work on React and UI.',
       company: 'Acme Co',
