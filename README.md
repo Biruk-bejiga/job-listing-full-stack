@@ -45,6 +45,52 @@ npx prisma db push --accept-data-loss
 npm run dev
 ```
 
+## Seed data (optional)
+
+You can populate the database with sample admin, employer, developer, jobs, and one application.
+
+1. Ensure `.env` has `DATABASE_URL` set and you have run prisma push.
+
+2. Run the seed script:
+
+```powershell
+npm run seed
+```
+
+You can customize emails by setting environment variables before running the script:
+
+```powershell
+$env:SEED_ADMIN_EMAIL = 'admin@example.com'
+$env:SEED_EMPLOYER_EMAIL = 'employer@example.com'
+$env:SEED_DEV_EMAIL = 'dev@example.com'
+npm run seed
+```
+
+After seeding, sign in using the seeded emails via Google (you may need to create accounts with those emails in your Google OAuth test users), or use the `create-admin` script to create the admin account that you then sign in with.
+
+## Example API calls
+
+List jobs (public):
+
+```powershell
+Invoke-RestMethod http://localhost:3000/api/jobs
+```
+
+Apply to a job (developer must be authenticated in browser; this example uses curl with cookie/token omitted):
+
+```bash
+curl -X POST http://localhost:3000/api/applications \
+	-H "Content-Type: application/json" \
+	-d '{"jobId":"<JOB_ID>","resumeURL":"https://example.com/resume.pdf","coverLetter":"I am interested."}'
+```
+
+Get applications for a developer (admin or the developer themselves):
+
+```powershell
+# replace <APPLICANT_ID> with the user's id returned from the seed script
+Invoke-RestMethod "http://localhost:3000/api/applications?applicantId=<APPLICANT_ID>"
+```
+
 ## NextAuth Google setup
 - Create OAuth credentials in Google Cloud Console
 - Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`

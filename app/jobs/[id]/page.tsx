@@ -1,5 +1,6 @@
 import { prisma } from '../../../lib/prisma';
 import NavBar from '../../../components/NavBar';
+import ApplyForm from '../../../components/ApplyForm';
 
 export default async function JobPage({ params }: { params: { id: string }}) {
   const job = await prisma.job.findUnique({ where: { id: params.id } });
@@ -12,6 +13,9 @@ export default async function JobPage({ params }: { params: { id: string }}) {
         <h1 className="text-2xl font-bold">{job.title}</h1>
         <div className="text-sm text-gray-600">{job.company} • {job.location}</div>
         <div className="mt-4 whitespace-pre-line">{job.description}</div>
+
+        {/* Apply form (client) */}
+        <ApplyForm jobId={job.id} />
       </div>
     </main>
   );
