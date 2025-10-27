@@ -51,6 +51,16 @@ npm run dev
 - Set `NEXTAUTH_URL` to your site URL (http://localhost:3000 for local)
 - Set `NEXTAUTH_SECRET` (use a strong random value)
 
+### Creating an initial admin
+
+To create the first admin (who can create employer accounts), set the `INITIAL_ADMIN_EMAIL` environment variable and run the included script:
+
+```powershell
+$env:INITIAL_ADMIN_EMAIL = 'admin@example.com'; npm run create-admin
+```
+
+This will create a user with `role = admin`. After that, sign in with that email via Google (or create the user via the admin UI) to complete the account.
+
 ## Prisma Models
 See `prisma/schema.prisma` for models: User, Account, Session, VerificationToken, Job, Application.
 

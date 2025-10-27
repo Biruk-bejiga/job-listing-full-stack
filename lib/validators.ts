@@ -1,0 +1,23 @@
+import { z } from 'zod';
+
+export const createJobSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  company: z.string().min(1, 'Company is required'),
+  location: z.string().min(1, 'Location is required'),
+  salary: z.string().optional().nullable()
+});
+
+export const updateJobSchema = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().min(1).optional(),
+  company: z.string().min(1).optional(),
+  location: z.string().min(1).optional(),
+  salary: z.string().optional().nullable()
+});
+
+export const applicationSchema = z.object({
+  jobId: z.string().min(1),
+  resumeURL: z.string().url().optional(),
+  coverLetter: z.string().optional()
+});
