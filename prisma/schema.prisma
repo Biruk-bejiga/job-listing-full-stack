@@ -1,0 +1,85 @@
+// Prisma schema for MongoDB
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @map("_id") @default(auto()) @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(DEVELOPER)
+  accounts      Account[] @relation("accounts")
+  sessions      Session[] @relation("sessions")
+  applications  Application[]
+  jobs          Job[]     @relation("postedBy")
+}
+
+model Account {
+  id                 String  @id @map("_id") @default(auto()) @db.ObjectId
+  userId             String  @db.ObjectId
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User    @relation(fields: [userId], references: [id], name: "accounts")
+
+  @@index([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @map("_id") @default(auto()) @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], name: "sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String @unique
+  expires    DateTime
+
+  @@map("VerificationToken")
+}
+
+enum Role {
+  DEVELOPER
+  EMPLOYER
+}
+
+model Job {
+  id          String      @id @map("_id") @default(auto()) @db.ObjectId
+  title       String
+  company     String
+  location    String
+  description String
+  salary      String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  postedById  String      @db.ObjectId
+  postedBy    User        @relation(fields: [postedById], references: [id], name: "postedBy")
+  applications Application[]
+}
+
+model Application {
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  jobId     String   @db.ObjectId
+  job       Job      @relation(fields: [jobId], references: [id])
+  applicantId String @db.ObjectId
+  applicant User     @relation(fields: [applicantId], references: [id])
+  coverLetter String?
+  createdAt DateTime @default(now())
+}
